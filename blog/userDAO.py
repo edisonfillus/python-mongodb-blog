@@ -46,15 +46,14 @@ class UserDAO:
     def make_pw_hash(self, pw,salt=None):
         if salt == None:
             salt = self.make_salt();
-        return hashlib.sha256(str(pw + salt).encode('utf-8')).hexdigest()+","+ salt
+        return hashlib.sha256(pw + salt).hexdigest()+","+ salt
 
     # Validates a user login. Returns user record or None
     def validate_login(self, username, password):
 
         user = None
         try:
-            user = self.users.find({"_id": username}).next()
-            print("This space intentionally left blank.")
+            user = self.users.find_one({'_id': username})
         except:
             print("Unable to query database for user")
 
@@ -82,8 +81,6 @@ class UserDAO:
 
         try:
             self.users.insert_one(user)
-            print("This space intentionally left blank.")
-
         except pymongo.errors.OperationFailure:
             print("oops, mongo error")
             return False
